@@ -1,59 +1,52 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Input from '../pages/Input.jsx'
 import { useFormik } from 'formik'
-import { registerSchema } from '../../validate/validate.js'
+import { loginSchema } from '../../validate/validate.js'
 import axios from 'axios'
-import {  toast } from 'react-toastify';
+import {toast} from 'react-toastify'
+import { Link, useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/User.jsx'
 
-export default function Register() {
+export default function Login() {
+
+    const navigate = useNavigate();
+    let {userToken,setUserToken}=useContext(UserContext);
+    if(userToken){
+        navigate(-1);
+    }
+
     const initialValues={
-            userName:'',
             email:'',
             password:'',
-            image:'',
-    }
-
-    const handleFieldchange =(event)=>{
-        formik.setFieldValue('image',event.target.files[0]);
-    }
+    };
 
     const onSubmit =async users =>{
-        const formData = new FormData();
-        formData.append("userName",users.userName)
-        formData.append("email",users.email)
-        formData.append("password" , users.password)
-        formData.append("image",users.image)
-        const {data} =await axios.post(`https://ecommerce-node4.vercel.app/auth/signup`,formData);
+
+        const {data} =await axios.post(`https://ecommerce-node4.vercel.app/auth/signin`,users);
         if(data.message=='success'){
-            localStorage.setItem("userToken", data.Token)
-            formik.resetForm();
-            toast.success('signup succeffuly', {
+               localStorage.setItem("userToken",data.token)
+                setUserToken(data.token)
+                toast.success('login successfully', {
                 position: "top-right",
-                autoClose: false,
+                autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
                 theme: "dark",
-                });  
+                });
+                navigate('/')
         }
     }
 
     const formik = useFormik({
         initialValues,
         onSubmit,
-        validationSchema:registerSchema
+        validationSchema:loginSchema
     });
 
     const inputs=[
-        {
-            id:'username',
-            type:'text',
-            name:'userName',
-            title:'user name',
-            value:formik.values.userName,
-        },
         {
             id:'email',
             type:'email',
@@ -68,13 +61,7 @@ export default function Register() {
             title:'user password',
             value:formik.values.password,
         },
-        {
-            id:"image",
-            type:"file",
-            name:"image",
-            title:"user image",
-            onChange:handleFieldchange,
-        }
+
     ]
 
     const renderInputs = inputs.map( (input , index) =>
@@ -89,14 +76,14 @@ export default function Register() {
             touched={formik.touched}
             key={index} />
     )
-
   return (
     <>
         <div className='container'>
-               <h2>Register</h2>
-                 <form onSubmit={formik.handleSubmit} encType='multipart/form-data'>
+               <h2>Log in</h2>
+                 <form onSubmit={formik.handleSubmit}>
                     {renderInputs}
-                    <button type='submit' className='submitbutton bg-white border-1 mb-4' disabled={!formik.isValid}> Register </button>
+                    <button type='submit' className=' bg-white border-1 mb-4' disabled={!formik.isValid}> Log in </button>
+                    <Link to='/sendcode'> forget password ?</Link>
                 </form> 
         </div>
     </>

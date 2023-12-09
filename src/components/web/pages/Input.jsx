@@ -1,9 +1,6 @@
 import React from 'react'
-import '../register/register.css'
 
 export default function Input({type='text',id,name,title,onChange,value,errors,touched,onBlur}) {
-  console.log(touched)
-
   return (
     
     <>
