@@ -4,7 +4,7 @@ import { CartContext } from '../context/Cart.jsx'
 import { useQuery } from 'react-query';
 
 export default function Cart() {
-    const {getCartContext,removeItemContext}=useContext(CartContext);
+    const {getCartContext,removeItemContext,clearCartContext}=useContext(CartContext);
  
     const getCart=async()=>{
         const res = await getCartContext();
@@ -15,7 +15,12 @@ export default function Cart() {
         const res = await removeItemContext(productId);
         return res;
     }
-
+ 
+    const clearCart=async()=>{
+       const res=await clearCartContext();
+       console.log(res);
+    }
+    
     const {data,isLoading}=useQuery("Cart",getCart)
      
 
@@ -109,9 +114,10 @@ return (
                     <div className="subtotal">${product.quantity * product.details.price}</div>
                     </div>
                     )
-                ):<h2>Cart is Empty</h2>} 
-                  
+                ):<h2>Cart is Empty</h2>
+                }
 
+                <button className='clear-cart badge bg-primary' onClick={clearCart}>Clear Cart</button>
 
                 </div>
                 <div className="cart-summary">

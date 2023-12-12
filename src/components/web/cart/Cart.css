@@ -98,7 +98,9 @@ font-size:20px;
 
 }
 
-
+.clear-cart{
+    width: 10%;
+}
 .products .subtotal{
     width:120px;
     min-width: 120px;

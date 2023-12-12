@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom'
-import ReactImageMagnify from 'react-image-magnify';
 import axios from 'axios';
 import { CartContext } from '../context/Cart.jsx';
 
@@ -10,6 +9,7 @@ function Product() {
 
     const getProduct=async()=>{
         const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/products/${productId}`)
+        console.log(data)
         return data.product;
     }
 
@@ -31,23 +31,7 @@ function Product() {
       <div className="row">
           <div className="col-lg-4">
             {data.subImages.map( (img,index)=>
-            <React.Fragment key={index}>
-              <ReactImageMagnify {...{
-                smallImage: {
-                    alt: 'Wristwatch by Ted Baker London',
-                    isFluidWidth: true,
-                    src: img.secure_url
-                },
-                largeImage: {
-                    src: img.secure_url,
-                    width: 1200,
-                    height: 1800
-                },
-                isHintEnabled:true,
-                shouldUsePositiveSpaceLens:true,
-
-            }} />
-            </React.Fragment>
+                <img src={data.mainImage.secure_url}></img>
             )}
           </div>
           <div className="col-lg-8">

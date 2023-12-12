@@ -8,6 +8,7 @@ export const CartContext = createContext(null);
 export function CartContextProvider({children}){
 
   let  [count,setCount] = useState(0);
+
   const addToCartContext = async(productId)=>{
       try{
         const token = localStorage.getItem('userToken')
@@ -63,8 +64,34 @@ export function CartContextProvider({children}){
     }
     }
 
+    const clearCartContext = async () => {
+      try {
+        const token = localStorage.getItem("userToken");
+        console.log(token)
+        const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/cart/clear`,
+          { headers: { Authorization: `Tariq__${token}` } }
+        );
+        if (data.message == "success") {
+          toast.success("Cart cleared successfully", {
+            position: "top-right",
+            autoClose: false,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
+        setCount(0);
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
   
-  return <CartContext.Provider value={{addToCartContext,getCartContext,removeItemContext,setCount,count}}>
+  return <CartContext.Provider value={{addToCartContext,getCartContext,removeItemContext,setCount,count,clearCartContext}}>
           {children}
       </CartContext.Provider>;
 }
